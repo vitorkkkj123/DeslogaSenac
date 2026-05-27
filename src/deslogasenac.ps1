@@ -1,3 +1,6 @@
+# --- CORREÇÃO DE UTF-8 (LETRAS E ACENTOS) ---
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
@@ -46,34 +49,54 @@ $BtnLimpar.Font = New-Object System.Drawing.Font("Segoe UI", 10, [System.Drawing
 $BtnLimpar.FlatStyle = "Flat"
 $Form.Controls.Add($BtnLimpar)
 
-# --- LÓGICA DE LIMPEZA ---
+# --- LÓGICA DE LIMPEZA OTIMIZADA ---
 $BtnLimpar.Add_Click({
     $BtnLimpar.Enabled = $false
     $LabelStatus.Text = "Encerrando navegadores..."
+    $Form.Refresh() # Força a interface a atualizar o texto na tela imediatamente
     $ProgressBar.Value = 30
     
-    # 1. Mata processos
+    # 1. Encerra processos de forma agressiva para liberar os arquivos
     $browsers = "chrome", "msedge", "brave"
     Stop-Process -Name $browsers -Force -ErrorAction SilentlyContinue
     Start-Sleep -Seconds 2
     
-    # 2. Limpeza
     $LabelStatus.Text = "Limpando rastros e sessões..."
+    $Form.Refresh()
     $ProgressBar.Value = 70
     
+    # 2. Caminhos específicos de Cache, Cookies e Sessões (Protege a estrutura e apaga os dados)
     $Paths = @(
-        "$env:LOCALAPPDATA\Google\Chrome\User Data",
-        "$env:LOCALAPPDATA\Microsoft\Edge\User Data"
+        # Google Chrome
+        "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Cache\*",
+        "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Network\Cookies",
+        "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Current Session",
+        "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Current Tabs",
+        # Microsoft Edge
+        "$env:LOCALAPPDATA\Microsoft\Edge\User Data\Default\Cache\*",
+        "$env:LOCALAPPDATA\Microsoft\Edge\User Data\Default\Network\Cookies",
+        "$env:LOCALAPPDATA\Microsoft\Edge\User Data\Default\Current Session",
+        "$env:LOCALAPPDATA\Microsoft\Edge\User Data\Default\Current Tabs",
+        # Brave Browser (Adicionado para dar suporte completo)
+        "$env:LOCALAPPDATA\BraveSoftware\Brave-Browser\User Data\Default\Cache\*",
+        "$env:LOCALAPPDATA\BraveSoftware\Brave-Browser\User Data\Default\Network\Cookies",
+        "$env:LOCALAPPDATA\BraveSoftware\Brave-Browser\User Data\Default\Current Session",
+        "$env:LOCALAPPDATA\BraveSoftware\Brave-Browser\User Data\Default\Current Tabs"
     )
     
     foreach ($path in $Paths) {
         if (Test-Path $path) {
-            Get-ChildItem -Path $path | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+            Remove-Item -Path $path -Recurse -Force -ErrorAction SilentlyContinue
         }
     }
     
+    # 3. Limpeza de arquivos temporários gerais da máquina (Garante mais privacidade)
+    Remove-Item -Path "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
+    
     $ProgressBar.Value = 100
     $LabelStatus.Text = "Concluído!"
+    $Form.Refresh()
+    
     [System.Windows.Forms.MessageBox]::Show("Dados limpos com sucesso. Sua privacidade está protegida!", "DeslogaSenac")
     $Form.Close()
 })

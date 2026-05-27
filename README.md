@@ -1,40 +1,75 @@
-# 🛡️ DeslogaSenac v1.0
+# 🛡️ DeslogaSenac
 
-O **DeslogaSenac** é uma solução de infraestrutura e segurança digital desenvolvida para os laboratórios do **SENAC Bahia**. O foco principal é a proteção de dados dos usuários (alunos e docentes) através da automação do encerramento de sessões e limpeza de rastros de navegação, garantindo total conformidade com a **LGPD (Lei Geral de Proteção de Dados)**.
-
-## 🚀 O Problema
-Em ambientes de uso compartilhado, é comum que usuários esqueçam contas pessoais logadas (Google, WhatsApp, LinkedIn, e-mails). Isso gera um risco crítico de exposição de dados e vulnerabilidades de segurança para a instituição.
-
-## ✨ Solução e Funcionalidades
-O DeslogaSenac transforma uma tarefa manual e negligenciada em um processo sistêmico:
-
-- **Interface Gráfica (GUI):** Operação intuitiva com barra de progresso, removendo a complexidade técnica para o usuário final.
-- **Limpeza Multi-Browser:** Suporte completo para **Google Chrome, Microsoft Edge e Brave**.
-- **Exclusão Profunda:** Vai além de limpar cookies; remove pastas de sessão e perfis locais para garantir o logoff real.
-- **Instalação Automatizada:** Script de deploy que configura o Agendador de Tarefas do Windows com apenas um clique.
-- **Resiliência:** Configurado para rodar no logon, garantindo que o computador inicie o dia limpo.
-
-## 📂 Estrutura do Projeto
-- `src/`: Contém o cérebro do projeto (Script PowerShell) e o lançador (Batch).
-- `deploy/`: Contém o script de automação para implementação em larga escala.
-- `assets/`: Demonstrações visuais e capturas de tela do software em operação.
-
-## 🛠️ Como Instalar (Para TI)
-Para implementar em uma máquina ou via servidor (AD):
-1. Navegue até a pasta `deploy/`.
-2. Execute o arquivo `instalar.ps1` como Administrador.
-3. O sistema criará automaticamente a tarefa agendada `DeslogaSenac_Startup`.
-
-> **Nota:** O script foi desenhado para rodar em modo *Hidden* (escondido) quando acionado pelo sistema, mantendo a experiência do usuário limpa.
-
-## 🏗️ Tecnologias
-- **PowerShell & WinForms:** Interface e lógica de manipulação de sistema.
-- **Batch:** Wrapper para elevação de privilégios e execução silenciosa.
-- **Schtasks:** Orquestração de tarefas nativas do Windows.
-
-## 📄 Licença
-Distribuído sob a **Licença MIT**. Veja `LICENSE` para mais informações.
+> **Automação inteligente e integrada para segurança da informação e privacidade em computadores compartilhados.**
 
 ---
-**Desenvolvido por Vitor Guilherme**  
-*Foco em Segurança da Informação e Automação de Infraestrutura.*
+
+## 🎯 O Problema
+
+Em ambientes com computadores compartilhados (como laboratórios acadêmicos, lan houses ou coworkings), é extremamente comum que os usuários esqueçam suas contas pessoais conectadas (Google, GitHub, redes sociais e e-mails) ao término da sessão. Isso gera uma grave vulnerabilidade de segurança, deixando dados sensíveis e históricos expostos para o próximo usuário da máquina.
+
+## 🚀 A Solução
+
+O **DeslogaSenac** resolve esse problema de forma totalmente automatizada. Integrado diretamente ao **Agendador de Tarefas do Windows**, o sistema é disparado silenciosamente a cada novo logon no sistema operacional. 
+
+Ele realiza o encerramento forçado dos principais navegadores e faz uma varredura cirúrgica, limpando caches, cookies, sessões ativas (`Current Session`/`Tabs`) e arquivos temporários locais, mitigando qualquer risco de exposição de dados sem corromper o perfil padrão de instalação dos browsers.
+
+---
+
+## 🛠️ Recursos e Tecnologias
+
+* **Interface Gráfica Dinâmica**: Desenvolvida em PowerShell usando a biblioteca nativa `Windows Forms` para dar comandos claros e feedback visual ao usuário.
+* **Identificação Dinâmica de Diretórios**: O instalador localiza automaticamente a raiz do projeto em qualquer máquina, independente do nome do usuário ou caminho do diretório local.
+* **Persistência via Agendador de Tarefas**: Automação nativa do Windows configurada com privilégios elevados para garantir a execução a cada novo logon.
+* **Compilação Autônoma**: Scripts de terminal convertidos em executáveis (`.exe`) via `PS2EXE` para facilitar a distribuição e o uso.
+
+---
+
+## 📂 Estrutura do Projeto
+
+```text
+DeslogaSenac/
+├── deploy/
+│   ├── instalar.exe    <-- Executável de instalação automatizada
+│   └── instalar.ps1    <-- Código-fonte do instalador
+└── src/
+    └── INICIAR_DESLOGA_SENAC.bat  <-- Script que invoca a interface e a lógica de limpeza
+
+
+
+🚀 Como Instalar e Usar
+1. Pré-requisitos
+Sistema Operacional Windows 10 ou 11.
+
+Privilégios de Administrador na máquina para registrar a automação.
+
+2. Instalação Automática
+Baixe ou clone este repositório no computador.
+
+Abra a pasta deploy/.
+
+Clique com o botão direito sobre o arquivo instalar.exe e selecione "Executar como Administrador".
+
+O terminal fará a configuração sozinho e criará o gatilho no sistema. Pronto!
+
+3. Execução Manual
+Se quiser forçar a limpeza a qualquer momento sem precisar deslogar do Windows:
+
+Abra o Agendador de Tarefas do Windows (taskschd.msc).
+
+Localize a tarefa DeslogaSenac_Startup.
+
+Clique com o botão direito nela e selecione Executar. A interface do programa abrirá na tela para você iniciar a limpeza imediatamente.
+
+🔒 Navegadores Suportados
+A varredura apaga os rastros e encerra os processos dos seguintes navegadores:
+
+[x] Google Chrome
+
+[x] Microsoft Edge
+
+[x] Brave Browser
+
+[x] Pasta de arquivos temporários do sistema do usuário (%TEMP%)
+
+Trabalho desenvolvido focado em automação de segurança e privacidade.

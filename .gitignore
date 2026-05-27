@@ -1,0 +1,18 @@
+# --- Arquivos do Sistema ---
+Thumbs.db
+Desktop.ini
+*.lnk
+
+# --- Ambientes de Desenvolvimento (VS Code e editores) ---
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.suo
+.history/
+
+# --- Logs de Erro e Cache do Terminal ---
+*.log
+.ps2exe/
