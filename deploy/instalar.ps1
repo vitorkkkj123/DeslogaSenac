@@ -14,8 +14,14 @@ if (-not $isAdmin) {
 }
 
 # 2. DEFINIÇÃO DOS CAMINHOS (ORIGEM E DESTINO SEGURO)
-$DiretorioAtual = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
-if (-not $DiretorioAtual) { $DiretorioAtual = Get-Location }
+# 2. DEFINIÇÃO DOS CAMINHOS (ORIGEM E DESTINO SEGURO) - VERSÃO BLINDADA
+if ($MyInvocation.MyCommand.Definition) {
+    $DiretorioAtual = Split-Path -Path $MyInvocation.MyCommand.Definition -Parent
+} else {
+    $DiretorioAtual = Get-Location
+}
+$RaizDoProjeto = Split-Path -Path $DiretorioAtual -Parent
+$CaminhoOrigemBat = Join-Path $RaizDoProjeto "src\INICIAR_DESLOGA_SENAC.bat"
 $RaizDoProjeto = Split-Path -Path $DiretorioAtual -Parent
 $CaminhoOrigemBat = Join-Path $RaizDoProjeto "src\INICIAR_DESLOGA_SENAC.bat"
 
